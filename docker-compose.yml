@@ -14,5 +14,18 @@ services:
     ports:
       - ${DB_PORT}:${DB_PORT}
 
+  minio:
+    container_name: airdrop-minio
+    image: bitnami/minio:2022
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    ports:
+      - ${MINIO_PORT_API}:${MINIO_PORT_API}
+      - ${MINIO_PORT_UI}:${MINIO_PORT_UI}
+    volumes:
+      - 'minio-data:/data'
+
 volumes:
   airdrop-db:
+  minio-data:

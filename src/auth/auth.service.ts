@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { User } from '@prisma/client'
@@ -15,7 +19,12 @@ export class AuthService {
   ) {}
 
   public async register(authDto: AuthDto) {
-    return await this.userService.create(authDto)
+    const user = await this.userService.getByEmail(authDto.email)
+    if (!user) {
+      return await this.userService.create(authDto)
+    } else {
+      throw new ForbiddenException('Ops! This user already exists')
+    }
   }
 
   public async login(authDto: AuthDto) {
